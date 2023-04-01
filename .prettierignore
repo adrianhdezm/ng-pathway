@@ -1,0 +1,16 @@
+# The following lines define the file types the Prettier CLI and plugins should format for this package
+*.*
+!*.js
+!*.json
+!*.md
+!*.ts
+!*.yaml
+!.prettierrc
+
+# Actual ignores
+*.min.css
+*.min.js
+package-lock.json
+/lib
+/build
+coverage/
