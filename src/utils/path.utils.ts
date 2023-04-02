@@ -36,3 +36,14 @@ export function getRelativePath(importPath: string, routePath: string): string {
 
   return relativePath;
 }
+
+export function extractFolders(filePaths: string[]): string[] {
+  const folderSet: Set<string> = new Set();
+
+  filePaths.forEach((filePath) => {
+    const folderPath = filePath.substring(0, filePath.lastIndexOf('/'));
+    folderSet.add(folderPath);
+  });
+
+  return Array.from(folderSet);
+}

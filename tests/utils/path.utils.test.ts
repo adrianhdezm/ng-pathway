@@ -1,4 +1,4 @@
-import { getBaseUrl, getRelativePath } from '../../src/utils/path.utils';
+import { extractFolders, getBaseUrl, getRelativePath } from '../../src/utils/path.utils';
 describe('path.utils', () => {
   describe('getBaseUrl', () => {
     describe('success cases', () => {
@@ -95,6 +95,40 @@ describe('path.utils', () => {
           `No relative path between "${invalidImportPath}" and "${routePath}"`
         );
       });
+    });
+  });
+
+  describe('extractFolders', () => {
+    it('handles no file paths', () => {
+      const input: string[] = [];
+      const expected: string[] = [];
+
+      const result = extractFolders(input);
+      expect(result).toEqual(expected);
+    });
+
+    it('handles single file path', () => {
+      const input: string[] = ['src/pages/index-page.js'];
+      const expected: string[] = ['src/pages'];
+
+      const result = extractFolders(input);
+      expect(result).toEqual(expected);
+    });
+
+    it('handles multiple file paths with no duplicates', () => {
+      const input: string[] = ['src/pages/index-page.js', 'src/pages/about/about-page.js', 'src/pages/contact/contact-page.js'];
+      const expected: string[] = ['src/pages', 'src/pages/about', 'src/pages/contact'];
+
+      const result = extractFolders(input);
+      expect(result).toEqual(expected);
+    });
+
+    it('handles multiple file paths with duplicates', () => {
+      const input: string[] = ['src/pages/index-page.js', 'src/pages/about/about-page.js', 'src/pages/about/about-page2.js'];
+      const expected: string[] = ['src/pages', 'src/pages/about'];
+
+      const result = extractFolders(input);
+      expect(result).toEqual(expected);
     });
   });
 });
