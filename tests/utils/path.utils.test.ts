@@ -116,8 +116,26 @@ describe('path.utils', () => {
     });
 
     it('handles multiple file paths with no duplicates', () => {
-      const input: string[] = ['src/pages/index-page.js', 'src/pages/about/about-page.js', 'src/pages/contact/contact-page.js'];
-      const expected: string[] = ['src/pages', 'src/pages/about', 'src/pages/contact'];
+      const input: string[] = [
+        'src/pages/dashboard-page.component.ts',
+        'src/pages/Teams/team-catalog-page.component.ts',
+        'src/pages/Teams/[id]/team-overview-page.component.ts',
+        'src/pages/Teams/[id]/{team-details}/team-details-layout.component.ts',
+        'src/pages/Teams/[id]/history/team-history-page.component.ts',
+        'src/pages/Teams/[id]/[...custom]/team-custom-page.component.ts',
+        'src/pages/Products/product-catalog-page.component.ts',
+        'src/pages/Products/[id]/product-details-page.component.ts'
+      ];
+      const expected: string[] = [
+        'src/pages',
+        'src/pages/Teams',
+        'src/pages/Teams/[id]',
+        'src/pages/Teams/[id]/{team-details}',
+        'src/pages/Teams/[id]/history',
+        'src/pages/Teams/[id]/[...custom]',
+        'src/pages/Products',
+        'src/pages/Products/[id]'
+      ];
 
       const result = extractFolders(input);
       expect(result).toEqual(expected);
