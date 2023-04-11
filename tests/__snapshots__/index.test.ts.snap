@@ -4,7 +4,7 @@ exports[`index.ts routesBuilder renders routes for nested structures 1`] = `
 [
   {
     "fileContent": "import { Route } from '@angular/router';
-import { DashboardPageComponent } from 'src/pages/dashboard-page.component.ts';
+import { DashboardPageComponent } from 'src/pages/dashboard-page.component';
 
 export const ROUTES: Route[] = [
     {
@@ -17,11 +17,11 @@ export const ROUTES: Route[] = [
   },
   {
     "fileContent": "import { Route } from '@angular/router';
-import { TeamCatalogPageComponent } from 'src/pages/Teams/team-catalog-page.component.ts';
-import { TeamDetailsLayoutComponent } from 'src/pages/Teams/[id]/(team-details)/team-details-layout.component.ts';
-import { TeamOverviewPageComponent } from 'src/pages/Teams/[id]/team-overview-page.component.ts';
-import { TeamHistoryPageComponent } from 'src/pages/Teams/[id]/history/team-history-page.component.ts';
-import { TeamCustomPageComponent } from 'src/pages/Teams/[id]/[...custom]/team-custom-page.component.ts';
+import { TeamCatalogPageComponent } from 'src/pages/Teams/team-catalog-page.component';
+import { TeamDetailsLayoutComponent } from 'src/pages/Teams/[id]/(team-details)/team-details-layout.component';
+import { TeamOverviewPageComponent } from 'src/pages/Teams/[id]/team-overview-page.component';
+import { TeamHistoryPageComponent } from 'src/pages/Teams/[id]/history/team-history-page.component';
+import { TeamCustomPageComponent } from 'src/pages/Teams/[id]/[...custom]/team-custom-page.component';
 
 export const ROUTES: Route[] = [
     {
@@ -57,8 +57,8 @@ export const ROUTES: Route[] = [
   },
   {
     "fileContent": "import { Route } from '@angular/router';
-import { ProductCatalogPageComponent } from 'src/pages/Products/product-catalog-page.component.ts';
-import { ProductDetailsPageComponent } from 'src/pages/Products/[id]/product-details-page.component.ts';
+import { ProductCatalogPageComponent } from 'src/pages/Products/product-catalog-page.component';
+import { ProductDetailsPageComponent } from 'src/pages/Products/[id]/product-details-page.component';
 
 export const ROUTES: Route[] = [
     {

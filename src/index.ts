@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import Handlebars from 'handlebars';
 import { Route, RouteFile } from './types';
-import { extractFolders, getBaseUrl } from './utils/path.utils';
+import { extractFolders, getBaseUrl, removeFileExtension } from './utils/path.utils';
 import { buildFolderTreeFromHierarchy, flattenRoutes, generateFolderHierarchy, mapNodes, mapNodesToRoutes } from './utils/graph.utils';
 import { computeAngularRoute, computeComponentName, isString } from './utils/string.utils';
 
@@ -110,10 +110,10 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
     const fileName = node.route === '' ? 'index.ts' : `${node.route}.index.ts`;
 
     const fileImports = [
-      ...(node.file && node.component ? [{ file: node.file, component: node.component }] : []),
+      ...(node.file && node.component ? [{ file: removeFileExtension(node.file), component: node.component }] : []),
       ...flattenRoutes(node.children)
         .filter(({ file, component }) => file !== undefined && component !== undefined)
-        .map(({ file, component }) => ({ file, component }))
+        .map(({ file, component }) => ({ file: removeFileExtension(file as string), component }))
     ] as { file: string; component: string }[];
 
     const fileContent = indexTemplate({ path: node.route, component: node.component, children: node.children, fileImports });
