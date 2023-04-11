@@ -1,4 +1,4 @@
-import { computeAngularRoute, computeComponentName } from '../../src/utils/string.utils';
+import { computeAngularRoute, computeComponentName, isString } from '../../src/utils/string.utils';
 
 describe('string.utils', () => {
   describe('computeAngularRoute', () => {
@@ -98,6 +98,35 @@ describe('string.utils', () => {
       const filePath = './pages/dashboard.service';
       const componentName = computeComponentName(filePath);
       expect(componentName).toEqual('DashboardService');
+    });
+  });
+
+  describe('isString', () => {
+    it('should return true for a string value', () => {
+      const input = 'hello';
+      const expected = true;
+      const result = isString(input);
+      expect(result).toEqual(expected);
+    });
+    it('should return false for a non-string value', () => {
+      const input = 123;
+      const expected = false;
+      const result = isString(input);
+      expect(result).toEqual(expected);
+    });
+
+    it('should return false for null value', () => {
+      const input = null;
+      const expected = false;
+      const result = isString(input);
+      expect(result).toEqual(expected);
+    });
+
+    it('should return false for undefined value', () => {
+      const input = undefined;
+      const expected = false;
+      const result = isString(input);
+      expect(result).toEqual(expected);
     });
   });
 });
