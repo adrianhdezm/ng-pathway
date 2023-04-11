@@ -37,6 +37,7 @@
     "typescript": "^5.0.3"
   },
   "dependencies": {
-    "glob": "^9.3.2"
+    "glob": "^9.3.2",
+    "handlebars": "^4.7.7"
   }
 }
