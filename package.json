@@ -5,12 +5,15 @@
   "main": "lib/index.js",
   "files": [
     "lib/**/*",
+    "scripts/*.js",
     "README.md",
+    "package.json",
     "LICENSE"
   ],
   "scripts": {
     "test": "jest",
     "build": "tsc",
+    "postbuild": "node scripts/copy-templates.js",
     "lint": "npm run format && eslint .",
     "format": "prettier \"**/*.*\" --write",
     "check-format": "prettier \"**/*.*\" --check"

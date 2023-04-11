@@ -1,5 +1,6 @@
 node_modules/
 lib/
+scripts/
 coverage/
 .eslintrc.js
 jest.config.js
