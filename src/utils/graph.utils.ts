@@ -55,3 +55,17 @@ export function mapNodesToRoutes(nodes: FolderNode[]): Route[] {
     };
   });
 }
+
+export function flattenRoutes(
+  nodes: Route[],
+  flattenedRoutes: Pick<Route, 'component' | 'file' | 'route'>[] = []
+): Pick<Route, 'component' | 'file' | 'route'>[] {
+  for (const node of nodes) {
+    const { children, ...rest } = node;
+    flattenedRoutes.push(rest);
+    if (children.length > 0) {
+      flattenRoutes(children, flattenedRoutes);
+    }
+  }
+  return flattenedRoutes;
+}

@@ -1,5 +1,11 @@
-import { FolderMetadata, FolderNode } from '../../src/types';
-import { buildFolderTreeFromHierarchy, generateFolderHierarchy, mapNodes, mapNodesToRoutes } from '../../src/utils/graph.utils';
+import { FolderMetadata, FolderNode, Route } from '../../src/types';
+import {
+  buildFolderTreeFromHierarchy,
+  flattenRoutes,
+  generateFolderHierarchy,
+  mapNodes,
+  mapNodesToRoutes
+} from '../../src/utils/graph.utils';
 
 describe('graph.utils', () => {
   describe('generateFolderHierarchy', () => {
@@ -647,6 +653,47 @@ describe('graph.utils', () => {
       ];
 
       const result = mapNodesToRoutes(input);
+      expect(result).toEqual(expected);
+    });
+  });
+
+  describe('flattenRoutes', () => {
+    it('should return an empty array for an empty input', () => {
+      const input: Route[] = [];
+      const expected: Pick<Route, 'component' | 'file' | 'route'>[] = [];
+      const result = flattenRoutes(input);
+      expect(result).toEqual(expected);
+    });
+
+    it('should return an array with a single route for a single node', () => {
+      const input = [{ component: 'AppComponent', file: 'app.component.ts', route: '', children: [] }];
+      const expected = [{ component: 'AppComponent', file: 'app.component.ts', route: '' }];
+      const result = flattenRoutes(input);
+      expect(result).toEqual(expected);
+    });
+
+    it('should return an array of flattened routes for nested nodes', () => {
+      const input = [
+        {
+          component: 'AppComponent',
+          file: 'app.component.ts',
+          route: '',
+          children: [
+            {
+              component: 'PagesComponent',
+              file: 'pages.component.ts',
+              route: 'pages',
+              children: [{ component: 'TeamsComponent', file: 'teams.component.ts', route: 'teams', children: [] }]
+            }
+          ]
+        }
+      ];
+      const expected = [
+        { component: 'AppComponent', file: 'app.component.ts', route: '' },
+        { component: 'PagesComponent', file: 'pages.component.ts', route: 'pages' },
+        { component: 'TeamsComponent', file: 'teams.component.ts', route: 'teams' }
+      ];
+      const result = flattenRoutes(input);
       expect(result).toEqual(expected);
     });
   });
