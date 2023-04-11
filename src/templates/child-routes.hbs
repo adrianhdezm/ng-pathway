@@ -1,0 +1,13 @@
+{{#each this}}
+{
+    path: '{{this.route}}',
+    {{#if this.component}}
+    component: {{this.component}}{{#if children.length}},{{/if}}
+    {{/if}}
+    {{#if this.children.length}}
+    children: [
+        {{> childRoutes this.children}}
+    ]
+    {{/if}}
+},
+{{/each}}

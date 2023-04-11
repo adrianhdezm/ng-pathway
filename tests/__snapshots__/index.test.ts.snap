@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`index.ts routesBuilder renders routes for nested structures 1`] = `
+[
+  {
+    "fileContent": "import { Route } from '@angular/router';
+import { DashboardPageComponent } from 'src/pages/dashboard-page.component.ts';
+
+export const ROUTES: Route[] = [
+    {
+        path: '',
+        component: DashboardPageComponent
+    }
+];",
+    "fileName": "index.ts",
+  },
+  {
+    "fileContent": "import { Route } from '@angular/router';
+import { TeamCatalogPageComponent } from 'src/pages/Teams/team-catalog-page.component.ts';
+import { TeamDetailsLayoutComponent } from 'src/pages/Teams/[id]/(team-details)/team-details-layout.component.ts';
+import { TeamOverviewPageComponent } from 'src/pages/Teams/[id]/team-overview-page.component.ts';
+import { TeamHistoryPageComponent } from 'src/pages/Teams/[id]/history/team-history-page.component.ts';
+import { TeamCustomPageComponent } from 'src/pages/Teams/[id]/[...custom]/team-custom-page.component.ts';
+
+export const ROUTES: Route[] = [
+    {
+        path: 'Teams',
+        children: [
+            {
+                path: '',
+                component: TeamCatalogPageComponent
+            },
+            {
+                path: ':id',
+                component: TeamDetailsLayoutComponent,
+                children: [
+                    {
+                        path: '',
+                        component: TeamOverviewPageComponent
+                    },
+                    {
+                        path: 'history',
+                        component: TeamHistoryPageComponent
+                    },
+                    {
+                        path: '*',
+                        component: TeamCustomPageComponent
+                    },
+                ]
+            },
+        ]
+    }
+];",
+    "fileName": "Teams.index.ts",
+  },
+  {
+    "fileContent": "import { Route } from '@angular/router';
+import { ProductCatalogPageComponent } from 'src/pages/Products/product-catalog-page.component.ts';
+import { ProductDetailsPageComponent } from 'src/pages/Products/[id]/product-details-page.component.ts';
+
+export const ROUTES: Route[] = [
+    {
+        path: 'Products',
+        children: [
+            {
+                path: '',
+                component: ProductCatalogPageComponent
+            },
+            {
+                path: ':id',
+                component: ProductDetailsPageComponent
+            },
+        ]
+    }
+];",
+    "fileName": "Products.index.ts",
+  },
+]
+`;

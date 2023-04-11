@@ -20,3 +20,8 @@ export interface Route {
   route: string;
   children: Route[];
 }
+
+export interface RouteFile {
+  fileName: string;
+  fileContent: string;
+}
