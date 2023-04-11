@@ -47,3 +47,22 @@ export function extractFolders(filePaths: string[]): string[] {
 
   return Array.from(folderSet);
 }
+
+export function removeFileExtension(filePath: string): string {
+  const parsedPath = path.parse(filePath);
+  const ext = parsedPath.ext;
+  if (ext === '') {
+    // If there is no extension, return the path
+    return filePath;
+  } else {
+    // Check if the extension is a known JavaScript or TypeScript extension
+    const knownExtensions = ['.js', '.jsx', '.ts', '.tsx'];
+    if (knownExtensions.includes(ext)) {
+      // If it's a known extension, return the path without the extension
+      return path.join(parsedPath.dir, parsedPath.name);
+    } else {
+      // Otherwise, return the original path
+      return filePath;
+    }
+  }
+}

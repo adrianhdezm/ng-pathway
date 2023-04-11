@@ -1,4 +1,4 @@
-import { extractFolders, getBaseUrl, getRelativePath } from '../../src/utils/path.utils';
+import { extractFolders, getBaseUrl, getRelativePath, removeFileExtension } from '../../src/utils/path.utils';
 describe('path.utils', () => {
   describe('getBaseUrl', () => {
     describe('success cases', () => {
@@ -147,6 +147,43 @@ describe('path.utils', () => {
 
       const result = extractFolders(input);
       expect(result).toEqual(expected);
+    });
+  });
+
+  describe('removeFileExtension', () => {
+    it('should return the path name without the extension', () => {
+      const filePath = 'src/pages/Teams/team-catalog-page.component.ts';
+      const expectedName = 'src/pages/Teams/team-catalog-page.component';
+      const actualName = removeFileExtension(filePath);
+      expect(actualName).toBe(expectedName);
+    });
+
+    it('should return the path name when no extension is present', () => {
+      const filePath = 'src/pages/Teams/team-catalog-page.component';
+      const expectedName = 'src/pages/Teams/team-catalog-page.component';
+      const actualName = removeFileExtension(filePath);
+      expect(actualName).toBe(expectedName);
+    });
+
+    it('should return an empty string when given an empty string', () => {
+      const filePath = '';
+      const expectedName = '';
+      const actualName = removeFileExtension(filePath);
+      expect(actualName).toBe(expectedName);
+    });
+
+    it('should return the path when given a file name with no directory', () => {
+      const filePath = 'index.js';
+      const expectedName = 'index';
+      const actualName = removeFileExtension(filePath);
+      expect(actualName).toBe(expectedName);
+    });
+
+    it('should return the path when given a file name with no extension or directory', () => {
+      const filePath = 'README';
+      const expectedName = 'README';
+      const actualName = removeFileExtension(filePath);
+      expect(actualName).toBe(expectedName);
     });
   });
 });
