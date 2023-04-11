@@ -22,6 +22,7 @@ export interface Route {
 }
 
 export interface RouteFile {
+  path: string;
   fileName: string;
   fileContent: string;
 }

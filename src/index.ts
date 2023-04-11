@@ -118,6 +118,7 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
 
     const fileContent = indexTemplate({ path: node.route, component: node.component, children: node.children, fileImports });
     return {
+      path: node.route,
       fileName,
       fileContent
     };
