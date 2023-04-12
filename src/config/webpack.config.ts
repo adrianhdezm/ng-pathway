@@ -4,7 +4,7 @@ import * as webpack from 'webpack';
 import { routesBuilder } from '../index';
 import { emptyDirSync } from '../utils/file.utils';
 
-module.exports = (config: webpack.Configuration) => {
+export default function (config: webpack.Configuration) {
   const projectRoot = config.context || '';
   const ngpathwayRouterPath = path.join(projectRoot, '.ngpathway', 'router');
 
@@ -32,4 +32,4 @@ module.exports = (config: webpack.Configuration) => {
   config.plugins.push(new webpack.DefinePlugin({ __ROUTES__: JSON.stringify(ROUTES) }));
 
   return config;
-};
+}
