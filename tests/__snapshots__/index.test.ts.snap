@@ -10,7 +10,7 @@ export const ROUTES: Route[] = [
     {
         path: '',
         component: DashboardPageComponent
-    }
+    },
 ];",
     "fileName": "index.ts",
     "path": "",
@@ -25,32 +25,27 @@ import { TeamCustomPageComponent } from 'src/pages/Teams/[id]/[...custom]/team-c
 
 export const ROUTES: Route[] = [
     {
-        path: 'Teams',
+        path: '',
+        component: TeamCatalogPageComponent
+    },
+    {
+        path: ':id',
+        component: TeamDetailsLayoutComponent,
         children: [
             {
                 path: '',
-                component: TeamCatalogPageComponent
+                component: TeamOverviewPageComponent
             },
             {
-                path: ':id',
-                component: TeamDetailsLayoutComponent,
-                children: [
-                    {
-                        path: '',
-                        component: TeamOverviewPageComponent
-                    },
-                    {
-                        path: 'history',
-                        component: TeamHistoryPageComponent
-                    },
-                    {
-                        path: '*',
-                        component: TeamCustomPageComponent
-                    },
-                ]
+                path: 'history',
+                component: TeamHistoryPageComponent
+            },
+            {
+                path: '*',
+                component: TeamCustomPageComponent
             },
         ]
-    }
+    },
 ];",
     "fileName": "Teams.index.ts",
     "path": "Teams",
@@ -62,18 +57,13 @@ import { ProductDetailsPageComponent } from 'src/pages/Products/[id]/product-det
 
 export const ROUTES: Route[] = [
     {
-        path: 'Products',
-        children: [
-            {
-                path: '',
-                component: ProductCatalogPageComponent
-            },
-            {
-                path: ':id',
-                component: ProductDetailsPageComponent
-            },
-        ]
-    }
+        path: '',
+        component: ProductCatalogPageComponent
+    },
+    {
+        path: ':id',
+        component: ProductDetailsPageComponent
+    },
 ];",
     "fileName": "Products.index.ts",
     "path": "Products",
