@@ -1,6 +1,6 @@
 {
   "name": "ngpathway",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "NgPathway is a file-based router utilities library for Angular applications. It simplifies the process of creating and managing routes in your Angular app by allowing you to organize your routes in a directory structure that mirrors your application's UI structure.",
   "main": "lib/index.js",
   "files": [
@@ -12,9 +12,9 @@
   ],
   "scripts": {
     "postinstall": "node scripts/post-install.js",
+    "postbuild": "node scripts/copy-templates.js",
     "test": "jest",
     "build": "tsc",
-    "postbuild": "node scripts/copy-templates.js",
     "lint": "npm run format && eslint .",
     "format": "prettier \"**/*.*\" --write",
     "check-format": "prettier \"**/*.*\" --check"
