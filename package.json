@@ -25,6 +25,9 @@
   ],
   "author": "Adrian Hernandez-Mendez",
   "license": "MIT",
+  "peerDependencies": {
+    "webpack": "^5.76.0"
+  },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
     "@types/glob": "^8.1.0",
@@ -42,7 +45,6 @@
   },
   "dependencies": {
     "glob": "^9.3.2",
-    "handlebars": "^4.7.7",
-    "webpack": "^5.79.0"
+    "handlebars": "^4.7.7"
   }
 }
