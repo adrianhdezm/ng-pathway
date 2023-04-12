@@ -11,7 +11,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "postinstall": "node scripts/post-intall.js",
+    "postinstall": "node scripts/post-install.js",
     "test": "jest",
     "build": "tsc",
     "postbuild": "node scripts/copy-templates.js",
