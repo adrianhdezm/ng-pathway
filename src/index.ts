@@ -11,6 +11,7 @@ import {
   filterFilesFromNodeWithChildren,
   flattenRoutes,
   generateFolderHierarchy,
+  handleLayoutNodesInGraph,
   mapNodes,
   mapNodesToRoutes
 } from './utils/graph.utils';
@@ -45,21 +46,7 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
   const routeGraphWithFile = addCorrectComponentFileToGraphNodes(routeGraphWithFilteredFiles);
 
   // Handle Layout Nodes from Routes Graph
-  const routeGraphWithoutLayoutNodes = mapNodes(routeGraphWithFile, (node) => {
-    const { data, children } = node;
-    const layoutNodeIndex = children.findIndex((child) => child.data.path.match(/\(([^)]+)\)/));
-
-    if (layoutNodeIndex < 0) {
-      return node;
-    }
-
-    const file = children[layoutNodeIndex].data.file;
-    return {
-      ...node,
-      data: { ...data, file },
-      children: [...children.slice(0, layoutNodeIndex), ...children.slice(layoutNodeIndex + 1)]
-    };
-  });
+  const routeGraphWithoutLayoutNodes = handleLayoutNodesInGraph(routeGraphWithFile);
 
   // Compute Component Name from File Path
   const routeGraphWithComponentName = mapNodes(routeGraphWithoutLayoutNodes, (node) => {

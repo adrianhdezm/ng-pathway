@@ -6,6 +6,7 @@ import {
   filterFilesFromNodeWithChildren,
   flattenRoutes,
   generateFolderHierarchy,
+  handleLayoutNodesInGraph,
   mapNodes,
   mapNodesToRoutes
 } from '../../src/utils/graph.utils';
@@ -894,6 +895,117 @@ describe('graph.utils', () => {
       ];
 
       const result = addCorrectComponentFileToGraphNodes(routeGraph);
+
+      expect(result).toEqual(expectedOutput);
+    });
+  });
+
+  describe('handleLayoutNodesInGraph', () => {
+    it('should return the routes graph when not layout nodes are present', () => {
+      const routeGraph = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: [], route: 'Teams', file: undefined },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams',
+                files: ['src/pages/Teams/team-catalog-page.component.ts'],
+                file: 'src/pages/Teams/team-catalog-page.component.ts',
+                route: ''
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
+                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
+                route: ':id'
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+
+      const result = handleLayoutNodesInGraph(routeGraph);
+
+      expect(result).toEqual(routeGraph);
+    });
+    it('should handle layout nodes from routes graph', () => {
+      const routeGraph = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: [], route: 'Teams', file: undefined },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: '',
+                files: ['src/pages/Teams/team-catalog-page.component.ts'],
+                file: 'src/pages/Teams/team-catalog-page.component.ts',
+                route: ''
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: '(team-details)',
+                files: ['src/pages/Teams/(team-details)/team-details-layout.component.ts'],
+                file: 'src/pages/Teams/(team-details)/team-details-layout.component.ts',
+                parent: 'Teams/[id]',
+                route: '(team-details)'
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
+                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
+                route: ':id'
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+
+      const expectedOutput = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: [], route: 'Teams', file: 'src/pages/Teams/(team-details)/team-details-layout.component.ts' },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: '',
+                files: ['src/pages/Teams/team-catalog-page.component.ts'],
+                file: 'src/pages/Teams/team-catalog-page.component.ts',
+                route: ''
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
+                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
+                route: ':id'
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+
+      const result = handleLayoutNodesInGraph(routeGraph);
 
       expect(result).toEqual(expectedOutput);
     });

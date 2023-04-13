@@ -106,3 +106,21 @@ export function addCorrectComponentFileToGraphNodes(routeGraph: FolderNode[]) {
     };
   });
 }
+
+export function handleLayoutNodesInGraph(routeGraph: FolderNode[]) {
+  return mapNodes(routeGraph, (node) => {
+    const { data, children } = node;
+    const layoutNodeIndex = children.findIndex((child) => child.data.path.match(/\(([^)]+)\)/));
+
+    if (layoutNodeIndex < 0) {
+      return node;
+    }
+
+    const file = children[layoutNodeIndex].data.file;
+    return {
+      ...node,
+      data: { ...data, file },
+      children: [...children.slice(0, layoutNodeIndex), ...children.slice(layoutNodeIndex + 1)]
+    };
+  });
+}
