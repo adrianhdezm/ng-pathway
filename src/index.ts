@@ -8,14 +8,13 @@ import {
   addAngularRouteToGraphNodes,
   addCorrectComponentFileToGraphNodes,
   buildFolderTreeFromHierarchy,
+  computeComponentNameFromFilePath,
   filterFilesFromNodeWithChildren,
   flattenRoutes,
   generateFolderHierarchy,
   handleLayoutNodesInGraph,
-  mapNodes,
   mapNodesToRoutes
 } from './utils/graph.utils';
-import { computeComponentName, isString } from './utils/string.utils';
 
 // Construct the path to the Handlebars template file
 const templatePath = path.join(__dirname, 'templates');
@@ -49,16 +48,7 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
   const routeGraphWithoutLayoutNodes = handleLayoutNodesInGraph(routeGraphWithFile);
 
   // Compute Component Name from File Path
-  const routeGraphWithComponentName = mapNodes(routeGraphWithoutLayoutNodes, (node) => {
-    const { data } = node;
-    return {
-      ...node,
-      data: {
-        ...data,
-        component: isString(data.file) ? computeComponentName(data.file as string) : undefined
-      }
-    };
-  });
+  const routeGraphWithComponentName = computeComponentNameFromFilePath(routeGraphWithoutLayoutNodes);
 
   // Keep only angular route relevant properties
   const routeGraphForAngularRouter = mapNodesToRoutes(routeGraphWithComponentName);

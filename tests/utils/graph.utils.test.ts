@@ -3,6 +3,7 @@ import {
   addAngularRouteToGraphNodes,
   addCorrectComponentFileToGraphNodes,
   buildFolderTreeFromHierarchy,
+  computeComponentNameFromFilePath,
   filterFilesFromNodeWithChildren,
   flattenRoutes,
   generateFolderHierarchy,
@@ -1006,6 +1007,74 @@ describe('graph.utils', () => {
       ];
 
       const result = handleLayoutNodesInGraph(routeGraph);
+
+      expect(result).toEqual(expectedOutput);
+    });
+  });
+
+  describe('computeComponentNameFromFilePath', () => {
+    it('should compute component name from file path', () => {
+      const routeGraph = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: [], route: 'Teams', file: undefined },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: '',
+                files: ['src/pages/Teams/team-catalog-page.component.ts'],
+                file: 'src/pages/Teams/team-catalog-page.component.ts',
+                route: ''
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
+                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
+                route: ':id'
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+
+      const expectedOutput = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: [], route: 'Teams', file: undefined, component: undefined },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: '',
+                files: ['src/pages/Teams/team-catalog-page.component.ts'],
+                file: 'src/pages/Teams/team-catalog-page.component.ts',
+                route: '',
+                component: 'TeamCatalogPageComponent'
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
+                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
+                route: ':id',
+                component: 'TeamOverviewPageComponent'
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+
+      const result = computeComponentNameFromFilePath(routeGraph);
 
       expect(result).toEqual(expectedOutput);
     });
