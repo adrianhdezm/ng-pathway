@@ -17,7 +17,7 @@ describe('string.utils', () => {
     it('should handle parameters when parent is null', () => {
       const input = { path: 'Products/[id]/[...custom]', parent: null };
       const output = computeAngularRoute(input.path, input.parent);
-      expect(output).toBe('Products/:id/*');
+      expect(output).toBe('Products/:id/**');
     });
 
     it('should return empty path when parent is path', () => {
@@ -42,7 +42,7 @@ describe('string.utils', () => {
     it('should replace wildcard parameter with asterisk', () => {
       const input = { path: 'Teams/[id]/[...custom]', parent: 'Teams/[id]' };
       const output = computeAngularRoute(input.path, input.parent);
-      expect(output).toBe('*');
+      expect(output).toBe('**');
     });
 
     it('should replace complex parameter with colon', () => {

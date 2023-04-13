@@ -9,7 +9,7 @@ export function computeAngularRoute(path: string, parent: string | null): string
 
   return path
     .replace(`${parent}/`, '') // remove item.parent
-    .replace(/\[\.{3}.+\]/, '*') // replace [...foo] with *
+    .replace(/\[\.{3}.+\]/, '**') // replace [...foo] with **
     .replace(/\[(.+)\]/, ':$1'); // replace [foo] with :foo
 }
 

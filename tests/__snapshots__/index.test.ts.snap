@@ -41,7 +41,7 @@ export const ROUTES: Route[] = [
                 component: TeamHistoryPageComponent
             },
             {
-                path: '*',
+                path: '**',
                 component: TeamCustomPageComponent
             },
         ]
