@@ -93,3 +93,16 @@ export function filterFilesFromNodeWithChildren(routeGraph: FolderNode[]) {
     return { ...node, data: { ...data, files: [] } };
   });
 }
+
+export function addCorrectComponentFileToGraphNodes(routeGraph: FolderNode[]) {
+  return mapNodes(routeGraph, (node) => {
+    const { data } = node;
+    return {
+      ...node,
+      data: {
+        ...data,
+        file: data.files[0]
+      }
+    };
+  });
+}

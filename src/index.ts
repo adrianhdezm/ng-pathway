@@ -6,6 +6,7 @@ import { Route, RouteFile } from './types';
 import { extractFolders, getBaseUrl, removeFileExtension } from './utils/path.utils';
 import {
   addAngularRouteToGraphNodes,
+  addCorrectComponentFileToGraphNodes,
   buildFolderTreeFromHierarchy,
   filterFilesFromNodeWithChildren,
   flattenRoutes,
@@ -41,16 +42,7 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
   const routeGraphWithFilteredFiles = filterFilesFromNodeWithChildren(routeGraphWithAngularRoute);
 
   //Add correct component file property to Nodes in Routes Graph
-  const routeGraphWithFile = mapNodes(routeGraphWithFilteredFiles, (node) => {
-    const { data } = node;
-    return {
-      ...node,
-      data: {
-        ...data,
-        file: data.files[0]
-      }
-    };
-  });
+  const routeGraphWithFile = addCorrectComponentFileToGraphNodes(routeGraphWithFilteredFiles);
 
   // Handle Layout Nodes from Routes Graph
   const routeGraphWithoutLayoutNodes = mapNodes(routeGraphWithFile, (node) => {
