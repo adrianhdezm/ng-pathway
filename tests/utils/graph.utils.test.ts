@@ -1,5 +1,6 @@
 import { FolderMetadata, FolderNode, Route } from '../../src/types';
 import {
+  addAngularRouteToGraphNodes,
   buildFolderTreeFromHierarchy,
   flattenRoutes,
   generateFolderHierarchy,
@@ -695,6 +696,65 @@ describe('graph.utils', () => {
       ];
       const result = flattenRoutes(input);
       expect(result).toEqual(expected);
+    });
+  });
+
+  describe('addAngularRouteToGraphNodes', () => {
+    it('should add Angular Route property to nodes in routes graph', () => {
+      const routeGraph = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'] },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams',
+                files: ['src/pages/Teams/team-catalog-page.component.ts']
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts']
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+      const expectedOutput = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'], route: 'Teams' },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams',
+                files: ['src/pages/Teams/team-catalog-page.component.ts'],
+                route: ''
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
+                route: ':id'
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+
+      const result = addAngularRouteToGraphNodes(routeGraph);
+
+      expect(result).toEqual(expectedOutput);
     });
   });
 });

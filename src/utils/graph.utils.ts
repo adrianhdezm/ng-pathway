@@ -1,4 +1,5 @@
 import { Route, FolderNode, FolderMetadata } from '../types';
+import { computeAngularRoute } from './string.utils';
 
 export function generateFolderHierarchy(folderPaths: string[], baseUrl: string, filePaths: string[]): FolderMetadata[] {
   return folderPaths.map((folderPath) => {
@@ -68,4 +69,17 @@ export function flattenRoutes(
     }
   }
   return flattenedRoutes;
+}
+
+export function addAngularRouteToGraphNodes(routeGraph: FolderNode[]) {
+  return mapNodes(routeGraph, (node) => {
+    const { data } = node;
+    return {
+      ...node,
+      data: {
+        ...data,
+        route: computeAngularRoute(data.path, node.parent)
+      }
+    };
+  });
 }

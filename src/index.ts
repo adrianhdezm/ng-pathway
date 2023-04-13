@@ -4,8 +4,15 @@ import path from 'path';
 import Handlebars from 'handlebars';
 import { Route, RouteFile } from './types';
 import { extractFolders, getBaseUrl, removeFileExtension } from './utils/path.utils';
-import { buildFolderTreeFromHierarchy, flattenRoutes, generateFolderHierarchy, mapNodes, mapNodesToRoutes } from './utils/graph.utils';
-import { computeAngularRoute, computeComponentName, isString } from './utils/string.utils';
+import {
+  addAngularRouteToGraphNodes,
+  buildFolderTreeFromHierarchy,
+  flattenRoutes,
+  generateFolderHierarchy,
+  mapNodes,
+  mapNodesToRoutes
+} from './utils/graph.utils';
+import { computeComponentName, isString } from './utils/string.utils';
 
 // Construct the path to the Handlebars template file
 const templatePath = path.join(__dirname, 'templates');
@@ -27,16 +34,7 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
   const routeGraph = buildFolderTreeFromHierarchy(filteredFolderNodes);
 
   //Add Angular Route property to Nodes in Routes Graph
-  const routeGraphWithAngularRoute = mapNodes(routeGraph, (node) => {
-    const { data } = node;
-    return {
-      ...node,
-      data: {
-        ...data,
-        route: computeAngularRoute(data.path, node.parent)
-      }
-    };
-  });
+  const routeGraphWithAngularRoute = addAngularRouteToGraphNodes(routeGraph);
 
   //Remove files from Nodes with children in Routes Graph
   const routeGraphWithFilteredFiles = mapNodes(routeGraphWithAngularRoute, (node) => {
