@@ -7,6 +7,7 @@ import { extractFolders, getBaseUrl, removeFileExtension } from './utils/path.ut
 import {
   addAngularRouteToGraphNodes,
   buildFolderTreeFromHierarchy,
+  filterFilesFromNodeWithChildren,
   flattenRoutes,
   generateFolderHierarchy,
   mapNodes,
@@ -37,13 +38,7 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
   const routeGraphWithAngularRoute = addAngularRouteToGraphNodes(routeGraph);
 
   //Remove files from Nodes with children in Routes Graph
-  const routeGraphWithFilteredFiles = mapNodes(routeGraphWithAngularRoute, (node) => {
-    if (node.children.length < 1) {
-      return node;
-    }
-    const { data } = node;
-    return { ...node, data: { ...data, files: [] } };
-  });
+  const routeGraphWithFilteredFiles = filterFilesFromNodeWithChildren(routeGraphWithAngularRoute);
 
   //Add correct component file property to Nodes in Routes Graph
   const routeGraphWithFile = mapNodes(routeGraphWithFilteredFiles, (node) => {

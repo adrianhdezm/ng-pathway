@@ -83,3 +83,13 @@ export function addAngularRouteToGraphNodes(routeGraph: FolderNode[]) {
     };
   });
 }
+
+export function filterFilesFromNodeWithChildren(routeGraph: FolderNode[]) {
+  return mapNodes(routeGraph, (node) => {
+    if (node.children.length < 1) {
+      return node;
+    }
+    const { data } = node;
+    return { ...node, data: { ...data, files: [] } };
+  });
+}

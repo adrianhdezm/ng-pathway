@@ -2,6 +2,7 @@ import { FolderMetadata, FolderNode, Route } from '../../src/types';
 import {
   addAngularRouteToGraphNodes,
   buildFolderTreeFromHierarchy,
+  filterFilesFromNodeWithChildren,
   flattenRoutes,
   generateFolderHierarchy,
   mapNodes,
@@ -755,6 +756,81 @@ describe('graph.utils', () => {
       const result = addAngularRouteToGraphNodes(routeGraph);
 
       expect(result).toEqual(expectedOutput);
+    });
+  });
+
+  describe('filterFilesFromNodeWithChildren', () => {
+    it('should remove files from nodes with children in routes graph', () => {
+      const routeGraph = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'], route: 'Teams' },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams',
+                files: ['src/pages/Teams/team-catalog-page.component.ts'],
+                route: ''
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
+                route: ':id'
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+      const expectedOutput = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: [], route: 'Teams' },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams',
+                files: ['src/pages/Teams/team-catalog-page.component.ts'],
+                route: ''
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
+                route: ':id'
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+
+      const result = filterFilesFromNodeWithChildren(routeGraph);
+
+      expect(result).toEqual(expectedOutput);
+    });
+
+    it('should not remove files from nodes with no children in routes graph', () => {
+      const routeGraph = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'], route: 'Teams' },
+          children: []
+        }
+      ];
+
+      const result = filterFilesFromNodeWithChildren(routeGraph);
+
+      expect(result).toEqual(routeGraph);
     });
   });
 });
