@@ -1,7 +1,7 @@
 import { FolderMetadata, FolderNode, Route } from '../../src/types';
 import {
   addAngularRouteToGraphNodes,
-  addCorrectComponentFileToGraphNodes,
+  addComponentFileToGraphNodes,
   buildFolderTreeFromHierarchy,
   computeComponentNameFromFilePath,
   filterFilesFromNodeWithChildren,
@@ -837,7 +837,7 @@ describe('graph.utils', () => {
     });
   });
 
-  describe('addCorrectComponentFileToGraphNodes', () => {
+  describe('addComponentFileToGraphNodes', () => {
     it('should add correct component file property to nodes in nested routes graph', () => {
       const routeGraph = [
         {
@@ -895,7 +895,7 @@ describe('graph.utils', () => {
         }
       ];
 
-      const result = addCorrectComponentFileToGraphNodes(routeGraph);
+      const result = addComponentFileToGraphNodes(routeGraph);
 
       expect(result).toEqual(expectedOutput);
     });
@@ -924,7 +924,7 @@ describe('graph.utils', () => {
         }
       ];
 
-      const result = addCorrectComponentFileToGraphNodes(routeGraph);
+      const result = addComponentFileToGraphNodes(routeGraph);
 
       expect(result).toEqual(expectedOutput);
     });

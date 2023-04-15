@@ -94,7 +94,7 @@ export function filterFilesFromNodeWithChildren(routeGraph: FolderNode[]) {
   });
 }
 
-export function addCorrectComponentFileToGraphNodes(routeGraph: FolderNode[]) {
+export function addComponentFileToGraphNodes(routeGraph: FolderNode[]) {
   return mapNodes(routeGraph, (node) => {
     const { data } = node;
     const file = data.files.find((file) => file.endsWith('.component.ts'));
