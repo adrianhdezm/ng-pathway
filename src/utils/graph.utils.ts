@@ -49,18 +49,17 @@ export function mapNodesToRoutes(nodes: FolderNode[]): Route[] {
     const { data } = node;
     const children = mapNodesToRoutes(node.children);
     return {
-      component: data.component as string,
+      component: data.component as string | undefined,
       file: data.file as string | undefined,
+      providers: data.providers as string | undefined,
+      providersFile: data.providersFile as string | undefined,
       route: data.route as string,
       children
     };
   });
 }
 
-export function flattenRoutes(
-  nodes: Route[],
-  flattenedRoutes: Pick<Route, 'component' | 'file' | 'route'>[] = []
-): Pick<Route, 'component' | 'file' | 'route'>[] {
+export function flattenRoutes(nodes: Route[], flattenedRoutes: Omit<Route, 'children'>[] = []): Omit<Route, 'children'>[] {
   for (const node of nodes) {
     const { children, ...rest } = node;
     flattenedRoutes.push(rest);
@@ -148,6 +147,19 @@ export function computeComponentNameFromFilePath(routeGraph: FolderNode[]) {
       data: {
         ...data,
         component: isString(data.file) ? computeElementName(data.file as string) : undefined
+      }
+    };
+  });
+}
+
+export function computeProvidersNameFromFilePath(routeGraph: FolderNode[]) {
+  return mapNodes(routeGraph, (node) => {
+    const { data } = node;
+    return {
+      ...node,
+      data: {
+        ...data,
+        providers: isString(data.providersFile) ? computeElementName(data.providersFile as string) : undefined
       }
     };
   });

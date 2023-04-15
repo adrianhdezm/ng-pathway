@@ -2,7 +2,10 @@
 {
     path: '{{this.route}}',
     {{#if this.component}}
-    component: {{this.component}}{{#if children.length}},{{/if}}
+    component: {{this.component}}{{#if this.providers}},{{else}}{{#if children.length}},{{/if}}{{/if}}
+    {{/if}}
+    {{#if this.providers}}
+    providers: [...{{this.providers}}]{{#if children.length}},{{/if}}
     {{/if}}
     {{#if this.children.length}}
     children: [

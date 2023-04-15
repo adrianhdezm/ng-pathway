@@ -7,8 +7,10 @@ import { extractFolders, getBaseUrl, removeFileExtension } from './utils/path.ut
 import {
   addAngularRouteToGraphNodes,
   addComponentFileToGraphNodes,
+  addProvidersFileToGraphNodes,
   buildFolderTreeFromHierarchy,
   computeComponentNameFromFilePath,
+  computeProvidersNameFromFilePath,
   filterFilesFromNodeWithChildren,
   flattenRoutes,
   generateFolderHierarchy,
@@ -44,14 +46,20 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
   //Add correct component file property to Nodes in Routes Graph
   const routeGraphWithFile = addComponentFileToGraphNodes(routeGraphWithFilteredFiles);
 
+  //Add correct provider file property to Nodes in Routes Graph
+  const routeGraphWithProviderFile = addProvidersFileToGraphNodes(routeGraphWithFile);
+
   // Handle Layout Nodes from Routes Graph
-  const routeGraphWithoutLayoutNodes = handleLayoutNodesInGraph(routeGraphWithFile);
+  const routeGraphWithoutLayoutNodes = handleLayoutNodesInGraph(routeGraphWithProviderFile);
 
   // Compute Component Name from File Path
   const routeGraphWithComponentName = computeComponentNameFromFilePath(routeGraphWithoutLayoutNodes);
 
+  // Compute Component Name from File Path
+  const routeGraphWithProviders = computeProvidersNameFromFilePath(routeGraphWithComponentName);
+
   // Keep only angular route relevant properties
-  const routeGraphForAngularRouter = mapNodesToRoutes(routeGraphWithComponentName);
+  const routeGraphForAngularRouter = mapNodesToRoutes(routeGraphWithProviders);
 
   // Map to route files
 
@@ -61,7 +69,11 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
 
   // Compile the Handlebars template
   Handlebars.registerPartial('childRoutes', childRoutesPartial);
-  const indexTemplate = Handlebars.compile<{ routes: Route[]; fileImports: { file: string; component: string }[] }>(indexTemplateSource);
+  const indexTemplate = Handlebars.compile<{
+    routes: Route[];
+    componentImports: { file: string; component: string }[];
+    providersImports: { file: string; providers: string }[];
+  }>(indexTemplateSource);
 
   const routeFiles = routeGraphForAngularRouter.map((node) => {
     if (node.route === '') {
@@ -70,15 +82,22 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
         fileName: 'index.ts',
         fileContent: indexTemplate({
           routes: [node],
-          fileImports: [{ file: removeFileExtension(node.file as string), component: node.component }]
+          componentImports: node.file ? [{ file: removeFileExtension(node.file as string), component: node.component as string }] : [],
+          providersImports: node.providersFile
+            ? [{ file: removeFileExtension(node.providersFile as string), providers: node.providers as string }]
+            : []
         })
       };
     } else {
-      const fileImports = flattenRoutes(node.children)
+      const componentImports = flattenRoutes(node.children)
         .filter(({ file, component }) => file !== undefined && component !== undefined)
-        .map(({ file, component }) => ({ file: removeFileExtension(file as string), component }));
+        .map(({ file, component }) => ({ file: removeFileExtension(file as string), component: component as string }));
 
-      const fileContent = indexTemplate({ routes: node.children, fileImports });
+      const providersImports = flattenRoutes(node.children)
+        .filter(({ providersFile, providers }) => providersFile !== undefined && providers !== undefined)
+        .map(({ providersFile, providers }) => ({ file: removeFileExtension(providersFile as string), providers: providers as string }));
+
+      const fileContent = indexTemplate({ routes: node.children, componentImports, providersImports });
 
       return {
         path: node.route,

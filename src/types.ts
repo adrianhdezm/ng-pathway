@@ -15,8 +15,10 @@ export interface FolderNode {
 }
 
 export interface Route {
-  component: string;
+  component?: string;
   file?: string;
+  providersFile?: string;
+  providers?: string;
   route: string;
   children: Route[];
 }
