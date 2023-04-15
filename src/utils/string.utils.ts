@@ -13,20 +13,20 @@ export function computeAngularRoute(path: string, parent: string | null): string
     .replace(/\[(.+)\]/, ':$1'); // replace [foo] with :foo
 }
 
-export function computeComponentName(filePath: string): string {
+export function computeElementName(filePath: string): string {
   const pathSegments = filePath.split('/');
   const fileName = pathSegments[pathSegments.length - 1];
 
-  // Compute the component name from the file name wihtout the suffix
-  const componentNameSegment = fileName.split('.')[0];
-  const componentNameSegments = componentNameSegment.split(/[-()]/);
-  const componentName = componentNameSegments.map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1)).join('');
+  // Compute the element name from the file name wihtout the suffix
+  const elementNameSegment = fileName.split('.')[0];
+  const elementNameSegments = elementNameSegment.split(/[-()]/);
+  const elementName = elementNameSegments.map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1)).join('');
 
-  // Compute the component name from the file name wihtout the suffix
+  // Compute the element name from the file name wihtout the suffix
   const suffixSegment = fileName.split('.')[1];
   const suffix = suffixSegment ? suffixSegment.charAt(0).toUpperCase() + suffixSegment.slice(1) : '';
 
-  return `${componentName}${suffix}`;
+  return `${elementName}${suffix}`;
 }
 
 export function isString(value: unknown) {

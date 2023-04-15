@@ -1,5 +1,5 @@
 import { Route, FolderNode, FolderMetadata } from '../types';
-import { computeAngularRoute, computeComponentName, isString } from './string.utils';
+import { computeAngularRoute, computeElementName, isString } from './string.utils';
 
 export function generateFolderHierarchy(folderPaths: string[], baseUrl: string, filePaths: string[]): FolderMetadata[] {
   return folderPaths.map((folderPath) => {
@@ -147,7 +147,7 @@ export function computeComponentNameFromFilePath(routeGraph: FolderNode[]) {
       ...node,
       data: {
         ...data,
-        component: isString(data.file) ? computeComponentName(data.file as string) : undefined
+        component: isString(data.file) ? computeElementName(data.file as string) : undefined
       }
     };
   });

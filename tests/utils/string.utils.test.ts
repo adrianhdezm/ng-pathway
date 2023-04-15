@@ -1,4 +1,4 @@
-import { computeAngularRoute, computeComponentName, isString } from '../../src/utils/string.utils';
+import { computeAngularRoute, computeElementName, isString } from '../../src/utils/string.utils';
 
 describe('string.utils', () => {
   describe('computeAngularRoute', () => {
@@ -58,46 +58,52 @@ describe('string.utils', () => {
     });
   });
 
-  describe('computeComponentName', () => {
+  describe('computeElementName', () => {
     it('should return PascalCase component name from Angular file path', () => {
       const filePath = './pages/Teams/[id]/(team-details)/team-details-layout.component';
-      const componentName = computeComponentName(filePath);
+      const componentName = computeElementName(filePath);
       expect(componentName).toEqual('TeamDetailsLayoutComponent');
     });
 
     it('should return PascalCase component name from simple Angular file path', () => {
       const filePath = './pages/dashboard-page.component';
-      const componentName = computeComponentName(filePath);
+      const componentName = computeElementName(filePath);
       expect(componentName).toEqual('DashboardPageComponent');
     });
 
     it('should return PascalCase component name from a file path with [...custom]', () => {
       const filePath = './pages/Teams/[id]/[...custom]/team-custom-page.component';
-      const componentName = computeComponentName(filePath);
+      const componentName = computeElementName(filePath);
       expect(componentName).toEqual('TeamCustomPageComponent');
     });
 
     it('should return PascalCase component name from a file path with (team-details)', () => {
       const filePath = './pages/Teams/[id]/(team-details)/team-details-layout.component';
-      const componentName = computeComponentName(filePath);
+      const componentName = computeElementName(filePath);
       expect(componentName).toEqual('TeamDetailsLayoutComponent');
     });
 
     it('should return PascalCase component ignoring the file extension', () => {
       const filePath = './pages/dashboard-page.component.ts';
-      const componentName = computeComponentName(filePath);
+      const componentName = computeElementName(filePath);
       expect(componentName).toEqual('DashboardPageComponent');
     });
 
     it('should return PascalCase component name from component not following the Angular file name convention', () => {
       const filePath = './pages/dashboard-page';
-      const componentName = computeComponentName(filePath);
+      const componentName = computeElementName(filePath);
       expect(componentName).toEqual('DashboardPage');
     });
     it('should return PascalCase service name from simple Angular file path', () => {
       const filePath = './pages/dashboard.service';
-      const componentName = computeComponentName(filePath);
+      const componentName = computeElementName(filePath);
       expect(componentName).toEqual('DashboardService');
+    });
+
+    it('should return PascalCase provider name from simple Angular file path', () => {
+      const filePath = './pages/dashboard.provider.ts';
+      const componentName = computeElementName(filePath);
+      expect(componentName).toEqual('DashboardProvider');
     });
   });
 
