@@ -1,11 +1,6 @@
 import { FolderMetadata, FolderNode, Route } from '../../src/types';
 import {
-  addAngularRouteToGraphNodes,
-  addComponentFileToGraphNodes,
-  addProvidersFileToGraphNodes,
   buildFolderTreeFromHierarchy,
-  computeComponentNameFromFilePath,
-  filterFilesFromNodeWithChildren,
   flattenRoutes,
   generateFolderHierarchy,
   handleLayoutNodesInGraph,
@@ -138,7 +133,7 @@ describe('graph.utils', () => {
       const expected = [
         {
           parent: null,
-          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'] },
+          data: { path: 'Teams', files: [] },
           children: [
             {
               parent: 'Teams',
@@ -218,7 +213,7 @@ describe('graph.utils', () => {
         },
         {
           parent: null,
-          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'] },
+          data: { path: 'Teams', files: [] },
           children: [
             {
               parent: 'Teams',
@@ -285,7 +280,7 @@ describe('graph.utils', () => {
         },
         {
           parent: null,
-          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'] },
+          data: { path: 'Teams', files: [] },
           children: [
             {
               parent: 'Teams',
@@ -299,7 +294,7 @@ describe('graph.utils', () => {
               parent: 'Teams',
               data: {
                 path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts']
+                files: []
               },
               children: [
                 {
@@ -523,146 +518,6 @@ describe('graph.utils', () => {
     });
   });
 
-  describe('mapNodesToRoutes', () => {
-    it('should return a single route for a single node', () => {
-      const input = [
-        {
-          parent: null,
-          data: {
-            path: '',
-            files: ['src/pages/dashboard-page.component.ts'],
-            file: 'src/pages/dashboard-page.component.ts',
-            component: 'DashboardPageComponent',
-            route: ''
-          },
-          children: []
-        }
-      ];
-      const expected = [
-        {
-          component: 'DashboardPageComponent',
-          file: 'src/pages/dashboard-page.component.ts',
-          route: '',
-          children: []
-        }
-      ];
-      const result = mapNodesToRoutes(input);
-      expect(result).toEqual(expected);
-    });
-
-    it('should return a tree of routes for nested nodes', () => {
-      const input = [
-        {
-          parent: null,
-          data: {
-            path: 'Teams',
-            files: [],
-            route: 'Teams'
-          },
-          children: [
-            {
-              data: {
-                path: 'Teams',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                route: '',
-                file: 'src/pages/Teams/team-catalog-page.component.ts',
-                component: 'TeamCatalogPageComponent'
-              },
-              parent: 'Teams',
-              children: []
-            },
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams/[id]',
-                files: [],
-                route: ':id',
-                file: 'src/pages/Teams/[id]/(team-details)/team-details-layout.component.ts',
-                component: 'TeamDetailsLayoutComponent'
-              },
-              children: [
-                {
-                  data: {
-                    path: 'Teams/[id]',
-                    files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                    route: '',
-                    file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
-                    component: 'TeamOverviewPageComponent'
-                  },
-                  parent: 'Teams/[id]',
-                  children: []
-                },
-                {
-                  parent: 'Teams/[id]',
-                  data: {
-                    path: 'Teams/[id]/history',
-                    files: ['src/pages/Teams/[id]/history/team-history-page.component.ts'],
-                    route: 'history',
-                    file: 'src/pages/Teams/[id]/history/team-history-page.component.ts',
-                    component: 'TeamHistoryPageComponent'
-                  },
-                  children: []
-                },
-                {
-                  parent: 'Teams/[id]',
-                  data: {
-                    path: 'Teams/[id]/[...custom]',
-                    files: ['src/pages/Teams/[id]/[...custom]/team-custom-page.component.ts'],
-                    route: '*',
-                    file: 'src/pages/Teams/[id]/[...custom]/team-custom-page.component.ts',
-                    component: 'TeamCustomPageComponent'
-                  },
-                  children: []
-                }
-              ]
-            }
-          ]
-        }
-      ];
-      const expected = [
-        {
-          route: 'Teams',
-          children: [
-            {
-              component: 'TeamCatalogPageComponent',
-              file: 'src/pages/Teams/team-catalog-page.component.ts',
-              route: '',
-              children: []
-            },
-            {
-              component: 'TeamDetailsLayoutComponent',
-              file: 'src/pages/Teams/[id]/(team-details)/team-details-layout.component.ts',
-              route: ':id',
-              children: [
-                {
-                  component: 'TeamOverviewPageComponent',
-                  file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
-                  route: '',
-                  children: []
-                },
-                {
-                  component: 'TeamHistoryPageComponent',
-                  file: 'src/pages/Teams/[id]/history/team-history-page.component.ts',
-                  route: 'history',
-                  children: []
-                },
-                {
-                  component: 'TeamCustomPageComponent',
-                  file: 'src/pages/Teams/[id]/[...custom]/team-custom-page.component.ts',
-                  route: '*',
-                  children: []
-                }
-              ]
-            }
-          ]
-        }
-      ];
-
-      const result = mapNodesToRoutes(input);
-      expect(result).toEqual(expected);
-    });
-  });
-
   describe('flattenRoutes', () => {
     it('should return an empty array for an empty input', () => {
       const input: Route[] = [];
@@ -704,12 +559,12 @@ describe('graph.utils', () => {
     });
   });
 
-  describe('addAngularRouteToGraphNodes', () => {
-    it('should add Angular Route property to nodes in routes graph', () => {
+  describe('handleLayoutNodesInGraph', () => {
+    it('should return the routes graph when not layout nodes are present', () => {
       const routeGraph = [
         {
           parent: null,
-          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'] },
+          data: { path: 'Teams', files: [] },
           children: [
             {
               parent: 'Teams',
@@ -730,330 +585,6 @@ describe('graph.utils', () => {
           ]
         }
       ];
-      const expectedOutput = [
-        {
-          parent: null,
-          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'], route: 'Teams' },
-          children: [
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                route: ''
-              },
-              children: []
-            },
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                route: ':id'
-              },
-              children: []
-            }
-          ]
-        }
-      ];
-
-      const result = addAngularRouteToGraphNodes(routeGraph);
-
-      expect(result).toEqual(expectedOutput);
-    });
-  });
-
-  describe('filterFilesFromNodeWithChildren', () => {
-    it('should remove files from nodes with children in routes graph', () => {
-      const routeGraph = [
-        {
-          parent: null,
-          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'], route: 'Teams' },
-          children: [
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                route: ''
-              },
-              children: []
-            },
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                route: ':id'
-              },
-              children: []
-            }
-          ]
-        }
-      ];
-      const expectedOutput = [
-        {
-          parent: null,
-          data: { path: 'Teams', files: [], route: 'Teams' },
-          children: [
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                route: ''
-              },
-              children: []
-            },
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                route: ':id'
-              },
-              children: []
-            }
-          ]
-        }
-      ];
-
-      const result = filterFilesFromNodeWithChildren(routeGraph);
-
-      expect(result).toEqual(expectedOutput);
-    });
-
-    it('should not remove files from nodes with no children in routes graph', () => {
-      const routeGraph = [
-        {
-          parent: null,
-          data: { path: 'Teams', files: ['src/pages/Teams/team-catalog-page.component.ts'], route: 'Teams' },
-          children: []
-        }
-      ];
-
-      const result = filterFilesFromNodeWithChildren(routeGraph);
-
-      expect(result).toEqual(routeGraph);
-    });
-  });
-
-  describe('addComponentFileToGraphNodes', () => {
-    it('should add correct component file property to nodes in nested routes graph', () => {
-      const routeGraph = [
-        {
-          parent: null,
-          data: { path: 'Teams', files: [], route: 'Teams' },
-          children: [
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                route: ''
-              },
-              children: []
-            },
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                route: ':id'
-              },
-              children: []
-            }
-          ]
-        }
-      ];
-
-      const expectedOutput = [
-        {
-          parent: null,
-          data: { path: 'Teams', files: [], route: 'Teams', file: undefined },
-          children: [
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                file: 'src/pages/Teams/team-catalog-page.component.ts',
-                route: ''
-              },
-              children: []
-            },
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
-                route: ':id'
-              },
-              children: []
-            }
-          ]
-        }
-      ];
-
-      const result = addComponentFileToGraphNodes(routeGraph);
-
-      expect(result).toEqual(expectedOutput);
-    });
-
-    it('should handle nodes with multiple files', () => {
-      const routeGraph = [
-        {
-          parent: null,
-          data: {
-            path: '',
-            files: ['src/pages/dashboard.matchers.ts', 'src/pages/dashboard.providers.ts', 'src/pages/dashboard-page.component.ts']
-          },
-          children: []
-        }
-      ];
-
-      const expectedOutput = [
-        {
-          parent: null,
-          data: {
-            path: '',
-            files: ['src/pages/dashboard.matchers.ts', 'src/pages/dashboard.providers.ts', 'src/pages/dashboard-page.component.ts'],
-            file: 'src/pages/dashboard-page.component.ts'
-          },
-          children: []
-        }
-      ];
-
-      const result = addComponentFileToGraphNodes(routeGraph);
-
-      expect(result).toEqual(expectedOutput);
-    });
-  });
-
-  describe('addProvidersFileToGraphNodes', () => {
-    it('should add providers file property to nodes in nested routes graph', () => {
-      const routeGraph = [
-        {
-          parent: null,
-          data: { path: 'Teams', files: [], route: 'Teams' },
-          children: [
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                route: ''
-              },
-              children: []
-            },
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts', 'src/pages/team-overview.providers.ts'],
-                route: ':id'
-              },
-              children: []
-            }
-          ]
-        }
-      ];
-
-      const expectedOutput = [
-        {
-          parent: null,
-          data: { path: 'Teams', files: [], route: 'Teams', file: undefined },
-          children: [
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                providersFile: undefined,
-                route: ''
-              },
-              children: []
-            },
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts', 'src/pages/team-overview.providers.ts'],
-                providersFile: 'src/pages/team-overview.providers.ts',
-                route: ':id'
-              },
-              children: []
-            }
-          ]
-        }
-      ];
-
-      const result = addProvidersFileToGraphNodes(routeGraph);
-
-      expect(result).toEqual(expectedOutput);
-    });
-
-    it('handles nodes with multiple files', () => {
-      const routeGraph = [
-        {
-          parent: null,
-          data: {
-            path: '',
-            files: ['src/pages/dashboard.matchers.ts', 'src/pages/dashboard.providers.ts', 'src/pages/dashboard-page.component.ts']
-          },
-          children: []
-        }
-      ];
-
-      const expectedOutput = [
-        {
-          parent: null,
-          data: {
-            path: '',
-            files: ['src/pages/dashboard.matchers.ts', 'src/pages/dashboard.providers.ts', 'src/pages/dashboard-page.component.ts'],
-            providersFile: 'src/pages/dashboard.providers.ts'
-          },
-          children: []
-        }
-      ];
-
-      const result = addProvidersFileToGraphNodes(routeGraph);
-
-      expect(result).toEqual(expectedOutput);
-    });
-  });
-
-  describe('handleLayoutNodesInGraph', () => {
-    it('should return the routes graph when not layout nodes are present', () => {
-      const routeGraph = [
-        {
-          parent: null,
-          data: { path: 'Teams', files: [], route: 'Teams', file: undefined },
-          children: [
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                file: 'src/pages/Teams/team-catalog-page.component.ts',
-                route: ''
-              },
-              children: []
-            },
-            {
-              parent: 'Teams',
-              data: {
-                path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
-                route: ':id'
-              },
-              children: []
-            }
-          ]
-        }
-      ];
 
       const result = handleLayoutNodesInGraph(routeGraph);
 
@@ -1063,15 +594,13 @@ describe('graph.utils', () => {
       const routeGraph = [
         {
           parent: null,
-          data: { path: 'Teams', files: [], route: 'Teams', file: undefined },
+          data: { path: 'Teams', files: [] },
           children: [
             {
               parent: 'Teams',
               data: {
                 path: '',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                file: 'src/pages/Teams/team-catalog-page.component.ts',
-                route: ''
+                files: ['src/pages/Teams/team-catalog-page.component.ts']
               },
               children: []
             },
@@ -1079,10 +608,7 @@ describe('graph.utils', () => {
               parent: 'Teams',
               data: {
                 path: '(team-details)',
-                files: ['src/pages/Teams/(team-details)/team-details-layout.component.ts'],
-                file: 'src/pages/Teams/(team-details)/team-details-layout.component.ts',
-                parent: 'Teams/[id]',
-                route: '(team-details)'
+                files: ['src/pages/Teams/(team-details)/team-details-layout.component.ts']
               },
               children: []
             },
@@ -1090,9 +616,7 @@ describe('graph.utils', () => {
               parent: 'Teams',
               data: {
                 path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
-                route: ':id'
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts']
               },
               children: []
             }
@@ -1103,15 +627,13 @@ describe('graph.utils', () => {
       const expectedOutput = [
         {
           parent: null,
-          data: { path: 'Teams', files: [], route: 'Teams', file: 'src/pages/Teams/(team-details)/team-details-layout.component.ts' },
+          data: { path: 'Teams', files: ['src/pages/Teams/(team-details)/team-details-layout.component.ts'] },
           children: [
             {
               parent: 'Teams',
               data: {
                 path: '',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                file: 'src/pages/Teams/team-catalog-page.component.ts',
-                route: ''
+                files: ['src/pages/Teams/team-catalog-page.component.ts']
               },
               children: []
             },
@@ -1119,9 +641,7 @@ describe('graph.utils', () => {
               parent: 'Teams',
               data: {
                 path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
-                route: ':id'
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts']
               },
               children: []
             }
@@ -1135,71 +655,140 @@ describe('graph.utils', () => {
     });
   });
 
-  describe('computeComponentNameFromFilePath', () => {
-    it('should compute component name from file path', () => {
-      const routeGraph = [
+  describe('mapNodesToRoutes', () => {
+    it('should return a single route for a single node', () => {
+      const input = [
         {
           parent: null,
-          data: { path: 'Teams', files: [], route: 'Teams', file: undefined },
+          data: {
+            path: '',
+            files: ['src/pages/dashboard-page.component.ts']
+          },
+          children: []
+        }
+      ];
+      const expected = [
+        {
+          component: 'DashboardPageComponent',
+          file: 'src/pages/dashboard-page.component.ts',
+          providers: undefined,
+          providersFile: undefined,
+          route: '',
+          children: []
+        }
+      ];
+      const result = mapNodesToRoutes(input);
+      expect(result).toEqual(expected);
+    });
+
+    it('should return a tree of routes for nested nodes', () => {
+      const input = [
+        {
+          parent: null,
+          data: {
+            path: 'Teams',
+            files: []
+          },
           children: [
             {
-              parent: 'Teams',
               data: {
-                path: '',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                file: 'src/pages/Teams/team-catalog-page.component.ts',
-                route: ''
+                path: 'Teams',
+                files: ['src/pages/Teams/team-catalog-page.component.ts']
               },
+              parent: 'Teams',
               children: []
             },
             {
               parent: 'Teams',
               data: {
                 path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
-                route: ':id'
+                files: ['src/pages/Teams/[id]/(team-details)/team-details-layout.component.ts']
               },
-              children: []
+              children: [
+                {
+                  data: {
+                    path: 'Teams/[id]',
+                    files: ['src/pages/Teams/[id]/team-overview-page.component.ts']
+                  },
+                  parent: 'Teams/[id]',
+                  children: []
+                },
+                {
+                  parent: 'Teams/[id]',
+                  data: {
+                    path: 'Teams/[id]/history',
+                    files: ['src/pages/Teams/[id]/history/team-history-page.component.ts']
+                  },
+                  children: []
+                },
+                {
+                  parent: 'Teams/[id]',
+                  data: {
+                    path: 'Teams/[id]/[...custom]',
+                    files: ['src/pages/Teams/[id]/[...custom]/team-custom-page.component.ts']
+                  },
+                  children: []
+                }
+              ]
             }
           ]
         }
       ];
-
-      const expectedOutput = [
+      const expected = [
         {
-          parent: null,
-          data: { path: 'Teams', files: [], route: 'Teams', file: undefined, component: undefined },
+          route: 'Teams',
+          component: undefined,
+          file: undefined,
+          providers: undefined,
+          providersFile: undefined,
           children: [
             {
-              parent: 'Teams',
-              data: {
-                path: '',
-                files: ['src/pages/Teams/team-catalog-page.component.ts'],
-                file: 'src/pages/Teams/team-catalog-page.component.ts',
-                route: '',
-                component: 'TeamCatalogPageComponent'
-              },
+              component: 'TeamCatalogPageComponent',
+              file: 'src/pages/Teams/team-catalog-page.component.ts',
+              providers: undefined,
+              providersFile: undefined,
+              route: '',
               children: []
             },
             {
-              parent: 'Teams',
-              data: {
-                path: 'Teams/[id]',
-                files: ['src/pages/Teams/[id]/team-overview-page.component.ts'],
-                file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
-                route: ':id',
-                component: 'TeamOverviewPageComponent'
-              },
-              children: []
+              component: 'TeamDetailsLayoutComponent',
+              file: 'src/pages/Teams/[id]/(team-details)/team-details-layout.component.ts',
+              providers: undefined,
+              providersFile: undefined,
+              route: ':id',
+              children: [
+                {
+                  component: 'TeamOverviewPageComponent',
+                  file: 'src/pages/Teams/[id]/team-overview-page.component.ts',
+                  providers: undefined,
+                  providersFile: undefined,
+                  route: '',
+                  children: []
+                },
+                {
+                  component: 'TeamHistoryPageComponent',
+                  file: 'src/pages/Teams/[id]/history/team-history-page.component.ts',
+                  providers: undefined,
+                  providersFile: undefined,
+                  route: 'history',
+                  children: []
+                },
+                {
+                  component: 'TeamCustomPageComponent',
+                  file: 'src/pages/Teams/[id]/[...custom]/team-custom-page.component.ts',
+                  providers: undefined,
+                  providersFile: undefined,
+                  route: '**',
+                  children: []
+                }
+              ]
             }
           ]
         }
       ];
 
-      const result = computeComponentNameFromFilePath(routeGraph);
-
-      expect(result).toEqual(expectedOutput);
+      const result = mapNodesToRoutes(input);
+      expect(result).toEqual(expected);
     });
   });
 });

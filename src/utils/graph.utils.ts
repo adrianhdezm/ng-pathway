@@ -26,7 +26,7 @@ export function buildFolderTreeFromHierarchy(folderNodes: FolderMetadata[], pare
     const children = buildFolderTreeFromHierarchy(folderNodes, folderNode.path);
     return {
       parent,
-      data: { path, files },
+      data: { path, files: children.length ? [] : files },
       children: children.length ? [{ data: { path, files }, parent: folderNode.path, children: [] }, ...children] : []
     };
   });
@@ -46,14 +46,21 @@ export function mapNodes(nodes: FolderNode[], callback: (node: FolderNode) => Fo
 
 export function mapNodesToRoutes(nodes: FolderNode[]): Route[] {
   return nodes.map((node) => {
-    const { data } = node;
+    const { data, parent } = node;
     const children = mapNodesToRoutes(node.children);
+
+    const route = computeAngularRoute(data.path, parent);
+    const file = data.files.find((file) => file.endsWith('.component.ts'));
+    const component = isString(file) ? computeElementName(file as string) : undefined;
+    const providersFile = data.files.find((file) => file.endsWith('.providers.ts'));
+    const providers = isString(providersFile) ? computeElementName(providersFile as string) : undefined;
+
     return {
-      component: data.component as string | undefined,
-      file: data.file as string | undefined,
-      providers: data.providers as string | undefined,
-      providersFile: data.providersFile as string | undefined,
-      route: data.route as string,
+      component,
+      file,
+      providers,
+      providersFile,
+      route,
       children
     };
   });
@@ -70,57 +77,6 @@ export function flattenRoutes(nodes: Route[], flattenedRoutes: Omit<Route, 'chil
   return flattenedRoutes;
 }
 
-export function addAngularRouteToGraphNodes(routeGraph: FolderNode[]) {
-  return mapNodes(routeGraph, (node) => {
-    const { data } = node;
-    return {
-      ...node,
-      data: {
-        ...data,
-        route: computeAngularRoute(data.path, node.parent)
-      }
-    };
-  });
-}
-
-export function filterFilesFromNodeWithChildren(routeGraph: FolderNode[]) {
-  return mapNodes(routeGraph, (node) => {
-    if (node.children.length < 1) {
-      return node;
-    }
-    const { data } = node;
-    return { ...node, data: { ...data, files: [] } };
-  });
-}
-
-export function addComponentFileToGraphNodes(routeGraph: FolderNode[]) {
-  return mapNodes(routeGraph, (node) => {
-    const { data } = node;
-    const file = data.files.find((file) => file.endsWith('.component.ts'));
-    return {
-      ...node,
-      data: {
-        ...data,
-        file
-      }
-    };
-  });
-}
-
-export function addProvidersFileToGraphNodes(routeGraph: FolderNode[]) {
-  return mapNodes(routeGraph, (node) => {
-    const { data } = node;
-    const providersFile = data.files.find((file) => file.endsWith('.providers.ts'));
-    return {
-      ...node,
-      data: {
-        ...data,
-        providersFile
-      }
-    };
-  });
-}
-
 export function handleLayoutNodesInGraph(routeGraph: FolderNode[]) {
   return mapNodes(routeGraph, (node) => {
     const { data, children } = node;
@@ -130,38 +86,12 @@ export function handleLayoutNodesInGraph(routeGraph: FolderNode[]) {
       return node;
     }
 
-    const file = children[layoutNodeIndex].data.file;
-    const providersFile = children[layoutNodeIndex].data.providersFile;
+    const layoutNode = children[layoutNodeIndex];
+
     return {
       ...node,
-      data: { ...data, file, providersFile },
+      data: { ...data, files: [...layoutNode.data.files] },
       children: [...children.slice(0, layoutNodeIndex), ...children.slice(layoutNodeIndex + 1)]
-    };
-  });
-}
-
-export function computeComponentNameFromFilePath(routeGraph: FolderNode[]) {
-  return mapNodes(routeGraph, (node) => {
-    const { data } = node;
-    return {
-      ...node,
-      data: {
-        ...data,
-        component: isString(data.file) ? computeElementName(data.file as string) : undefined
-      }
-    };
-  });
-}
-
-export function computeProvidersNameFromFilePath(routeGraph: FolderNode[]) {
-  return mapNodes(routeGraph, (node) => {
-    const { data } = node;
-    return {
-      ...node,
-      data: {
-        ...data,
-        providers: isString(data.providersFile) ? computeElementName(data.providersFile as string) : undefined
-      }
     };
   });
 }

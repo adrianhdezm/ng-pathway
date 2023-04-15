@@ -5,13 +5,7 @@ import Handlebars from 'handlebars';
 import { Route, RouteFile } from './types';
 import { extractFolders, getBaseUrl, removeFileExtension } from './utils/path.utils';
 import {
-  addAngularRouteToGraphNodes,
-  addComponentFileToGraphNodes,
-  addProvidersFileToGraphNodes,
   buildFolderTreeFromHierarchy,
-  computeComponentNameFromFilePath,
-  computeProvidersNameFromFilePath,
-  filterFilesFromNodeWithChildren,
   flattenRoutes,
   generateFolderHierarchy,
   handleLayoutNodesInGraph,
@@ -37,29 +31,11 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
   // Build Folder Tree From Folder Hierarchy - Create the Routes Graph
   const routeGraph = buildFolderTreeFromHierarchy(filteredFolderNodes);
 
-  //Add Angular Route property to Nodes in Routes Graph
-  const routeGraphWithAngularRoute = addAngularRouteToGraphNodes(routeGraph);
-
-  //Remove files from Nodes with children in Routes Graph
-  const routeGraphWithFilteredFiles = filterFilesFromNodeWithChildren(routeGraphWithAngularRoute);
-
-  //Add correct component file property to Nodes in Routes Graph
-  const routeGraphWithFile = addComponentFileToGraphNodes(routeGraphWithFilteredFiles);
-
-  //Add correct provider file property to Nodes in Routes Graph
-  const routeGraphWithProviderFile = addProvidersFileToGraphNodes(routeGraphWithFile);
-
   // Handle Layout Nodes from Routes Graph
-  const routeGraphWithoutLayoutNodes = handleLayoutNodesInGraph(routeGraphWithProviderFile);
+  const routeGraphWithoutLayoutNodes = handleLayoutNodesInGraph(routeGraph);
 
-  // Compute Component Name from File Path
-  const routeGraphWithComponentName = computeComponentNameFromFilePath(routeGraphWithoutLayoutNodes);
-
-  // Compute Component Name from File Path
-  const routeGraphWithProviders = computeProvidersNameFromFilePath(routeGraphWithComponentName);
-
-  // Keep only angular route relevant properties
-  const routeGraphForAngularRouter = mapNodesToRoutes(routeGraphWithProviders);
+  // Map nodes to Angular route properties
+  const routeGraphForAngularRouter = mapNodesToRoutes(routeGraphWithoutLayoutNodes);
 
   // Map to route files
 
