@@ -27,7 +27,7 @@ import { TeamOverviewPageComponent } from 'src/pages/Teams/[id]/team-overview-pa
 import { TeamHistoryPageComponent } from 'src/pages/Teams/[id]/history/team-history-page.component';
 import { TeamCustomPageComponent } from 'src/pages/Teams/[id]/[...custom]/team-custom-page.component';
 import { PROVIDERS as TeamCatalogProviders } from 'src/pages/Teams/team-catalog.providers';
-import { PROVIDERS as TeamDetailsProviders } from 'src/pages/Teams/[id]/team-details.providers';
+import { PROVIDERS as TeamDetailsProviders } from 'src/pages/Teams/[id]/(team-details)/team-details.providers';
 
 export const ROUTES: Route[] = [
     {
@@ -38,11 +38,11 @@ export const ROUTES: Route[] = [
     {
         path: ':id',
         component: TeamDetailsLayoutComponent,
+        providers: [...TeamDetailsProviders],
         children: [
             {
                 path: '',
-                component: TeamOverviewPageComponent,
-                providers: [...TeamDetailsProviders]
+                component: TeamOverviewPageComponent
             },
             {
                 path: 'history',

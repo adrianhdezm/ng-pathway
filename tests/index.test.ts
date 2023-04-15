@@ -30,10 +30,10 @@ describe('index.ts', () => {
       'src/pages/Teams/team-catalog.providers.ts',
       'src/pages/Teams/team-catalog-page.component.ts',
       'src/pages/Teams/[id]/team-overview-page.component.ts',
-      'src/pages/Teams/[id]/team-details.providers.ts',
       'src/pages/Teams/[id]/history/team-history-page.component.ts',
       'src/pages/Teams/[id]/[...custom]/team-custom-page.component.ts',
       'src/pages/Teams/[id]/(team-details)/team-details-layout.component.ts',
+      'src/pages/Teams/[id]/(team-details)/team-details.providers.ts',
       'src/pages/Products/product-catalog-page.component.ts',
       'src/pages/Products/[id]/product-details-page.component.ts'
     ];

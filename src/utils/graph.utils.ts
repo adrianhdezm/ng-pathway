@@ -131,9 +131,10 @@ export function handleLayoutNodesInGraph(routeGraph: FolderNode[]) {
     }
 
     const file = children[layoutNodeIndex].data.file;
+    const providersFile = children[layoutNodeIndex].data.providersFile;
     return {
       ...node,
-      data: { ...data, file },
+      data: { ...data, file, providersFile },
       children: [...children.slice(0, layoutNodeIndex), ...children.slice(layoutNodeIndex + 1)]
     };
   });
