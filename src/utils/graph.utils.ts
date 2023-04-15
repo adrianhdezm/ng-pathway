@@ -108,6 +108,20 @@ export function addComponentFileToGraphNodes(routeGraph: FolderNode[]) {
   });
 }
 
+export function addProvidersFileToGraphNodes(routeGraph: FolderNode[]) {
+  return mapNodes(routeGraph, (node) => {
+    const { data } = node;
+    const providersFile = data.files.find((file) => file.endsWith('.providers.ts'));
+    return {
+      ...node,
+      data: {
+        ...data,
+        providersFile
+      }
+    };
+  });
+}
+
 export function handleLayoutNodesInGraph(routeGraph: FolderNode[]) {
   return mapNodes(routeGraph, (node) => {
     const { data, children } = node;

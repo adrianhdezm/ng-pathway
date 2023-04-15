@@ -2,6 +2,7 @@ import { FolderMetadata, FolderNode, Route } from '../../src/types';
 import {
   addAngularRouteToGraphNodes,
   addComponentFileToGraphNodes,
+  addProvidersFileToGraphNodes,
   buildFolderTreeFromHierarchy,
   computeComponentNameFromFilePath,
   filterFilesFromNodeWithChildren,
@@ -925,6 +926,99 @@ describe('graph.utils', () => {
       ];
 
       const result = addComponentFileToGraphNodes(routeGraph);
+
+      expect(result).toEqual(expectedOutput);
+    });
+  });
+
+  describe('addProvidersFileToGraphNodes', () => {
+    it('should add providers file property to nodes in nested routes graph', () => {
+      const routeGraph = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: [], route: 'Teams' },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams',
+                files: ['src/pages/Teams/team-catalog-page.component.ts'],
+                route: ''
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts', 'src/pages/team-overview.providers.ts'],
+                route: ':id'
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+
+      const expectedOutput = [
+        {
+          parent: null,
+          data: { path: 'Teams', files: [], route: 'Teams', file: undefined },
+          children: [
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams',
+                files: ['src/pages/Teams/team-catalog-page.component.ts'],
+                providersFile: undefined,
+                route: ''
+              },
+              children: []
+            },
+            {
+              parent: 'Teams',
+              data: {
+                path: 'Teams/[id]',
+                files: ['src/pages/Teams/[id]/team-overview-page.component.ts', 'src/pages/team-overview.providers.ts'],
+                providersFile: 'src/pages/team-overview.providers.ts',
+                route: ':id'
+              },
+              children: []
+            }
+          ]
+        }
+      ];
+
+      const result = addProvidersFileToGraphNodes(routeGraph);
+
+      expect(result).toEqual(expectedOutput);
+    });
+
+    it('handles nodes with multiple files', () => {
+      const routeGraph = [
+        {
+          parent: null,
+          data: {
+            path: '',
+            files: ['src/pages/dashboard.matchers.ts', 'src/pages/dashboard.providers.ts', 'src/pages/dashboard-page.component.ts']
+          },
+          children: []
+        }
+      ];
+
+      const expectedOutput = [
+        {
+          parent: null,
+          data: {
+            path: '',
+            files: ['src/pages/dashboard.matchers.ts', 'src/pages/dashboard.providers.ts', 'src/pages/dashboard-page.component.ts'],
+            providersFile: 'src/pages/dashboard.providers.ts'
+          },
+          children: []
+        }
+      ];
+
+      const result = addProvidersFileToGraphNodes(routeGraph);
 
       expect(result).toEqual(expectedOutput);
     });
