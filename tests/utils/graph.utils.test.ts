@@ -838,7 +838,7 @@ describe('graph.utils', () => {
   });
 
   describe('addCorrectComponentFileToGraphNodes', () => {
-    it('should add correct component file property to nodes in routes graph', () => {
+    it('should add correct component file property to nodes in nested routes graph', () => {
       const routeGraph = [
         {
           parent: null,
@@ -892,6 +892,35 @@ describe('graph.utils', () => {
               children: []
             }
           ]
+        }
+      ];
+
+      const result = addCorrectComponentFileToGraphNodes(routeGraph);
+
+      expect(result).toEqual(expectedOutput);
+    });
+
+    it('should handle nodes with multiple files', () => {
+      const routeGraph = [
+        {
+          parent: null,
+          data: {
+            path: '',
+            files: ['src/pages/dashboard.matchers.ts', 'src/pages/dashboard.providers.ts', 'src/pages/dashboard-page.component.ts']
+          },
+          children: []
+        }
+      ];
+
+      const expectedOutput = [
+        {
+          parent: null,
+          data: {
+            path: '',
+            files: ['src/pages/dashboard.matchers.ts', 'src/pages/dashboard.providers.ts', 'src/pages/dashboard-page.component.ts'],
+            file: 'src/pages/dashboard-page.component.ts'
+          },
+          children: []
         }
       ];
 

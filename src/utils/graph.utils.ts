@@ -97,11 +97,12 @@ export function filterFilesFromNodeWithChildren(routeGraph: FolderNode[]) {
 export function addCorrectComponentFileToGraphNodes(routeGraph: FolderNode[]) {
   return mapNodes(routeGraph, (node) => {
     const { data } = node;
+    const file = data.files.find((file) => file.endsWith('.component.ts'));
     return {
       ...node,
       data: {
         ...data,
-        file: data.files[0]
+        file
       }
     };
   });
