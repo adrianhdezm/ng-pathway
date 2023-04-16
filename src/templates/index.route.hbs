@@ -6,6 +6,9 @@ import { {{this.component}} } from '{{this.file}}';
 {{#each providersImports}}
 import { PROVIDERS as {{this.providers}} } from '{{this.file}}';
 {{/each}}
+{{#each matchersImports}}
+import { MATCHERS as {{this.matchers}} } from '{{this.file}}';
+{{/each}}
 
 export const ROUTES: Route[] = [
     {{> childRoutes routes}}     

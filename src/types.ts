@@ -19,6 +19,8 @@ export interface Route {
   file?: string;
   providersFile?: string;
   providers?: string;
+  matchersFile?: string;
+  matchers?: string;
   route: string;
   children: Route[];
 }

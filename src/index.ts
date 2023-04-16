@@ -11,6 +11,9 @@ import {
   handleLayoutNodesInGraph,
   mapNodesToRoutes
 } from './utils/graph.utils';
+import helpers from 'handlebars-helpers';
+
+Handlebars.registerHelper(helpers());
 
 // Construct the path to the Handlebars template file
 const templatePath = path.join(__dirname, 'templates');
@@ -49,6 +52,7 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
     routes: Route[];
     componentImports: { file: string; component: string }[];
     providersImports: { file: string; providers: string }[];
+    matchersImports: { file: string; matchers: string }[];
   }>(indexTemplateSource);
 
   const routeFiles = routeGraphForAngularRouter.map((node) => {
@@ -61,6 +65,9 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
           componentImports: node.file ? [{ file: removeFileExtension(node.file as string), component: node.component as string }] : [],
           providersImports: node.providersFile
             ? [{ file: removeFileExtension(node.providersFile as string), providers: node.providers as string }]
+            : [],
+          matchersImports: node.matchersFile
+            ? [{ file: removeFileExtension(node.matchersFile as string), matchers: node.matchers as string }]
             : []
         })
       };
@@ -73,7 +80,11 @@ export function routesBuilder(pagesPattern: string): RouteFile[] {
         .filter(({ providersFile, providers }) => providersFile !== undefined && providers !== undefined)
         .map(({ providersFile, providers }) => ({ file: removeFileExtension(providersFile as string), providers: providers as string }));
 
-      const fileContent = indexTemplate({ routes: node.children, componentImports, providersImports });
+      const matchersImports = flattenRoutes(node.children)
+        .filter(({ matchersFile, matchers }) => matchersFile !== undefined && matchers !== undefined)
+        .map(({ matchersFile, matchers }) => ({ file: removeFileExtension(matchersFile as string), matchers: matchers as string }));
+
+      const fileContent = indexTemplate({ routes: node.children, componentImports, providersImports, matchersImports });
 
       return {
         path: node.route,

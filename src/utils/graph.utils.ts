@@ -54,12 +54,16 @@ export function mapNodesToRoutes(nodes: FolderNode[]): Route[] {
     const component = isString(file) ? computeElementName(file as string) : undefined;
     const providersFile = data.files.find((file) => file.endsWith('.providers.ts'));
     const providers = isString(providersFile) ? computeElementName(providersFile as string) : undefined;
+    const matchersFile = data.files.find((file) => file.endsWith('.matchers.ts'));
+    const matchers = isString(matchersFile) ? computeElementName(matchersFile as string) : undefined;
 
     return {
       component,
       file,
       providers,
       providersFile,
+      matchersFile,
+      matchers,
       route,
       children
     };
