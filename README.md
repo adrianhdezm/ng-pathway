@@ -48,7 +48,7 @@ After this, you need to add the webpack configuration to your `angular.json` or 
 
 ```
 
-To avoid conflicting with different webpack versions is recommended you run: `npm dedupe`. For more information the explanation (here)[https://stackoverflow.com/questions/76000975/nx-angular-project-build-failed-after-upgrading-to-webpack-5-79-0]
+To avoid conflicting with different webpack versions is recommended you run: `npm dedupe`. For more information the explanation [here](https://stackoverflow.com/questions/76000975/nx-angular-project-build-failed-after-upgrading-to-webpack-5-79-0)
 
 ## Usage
 
