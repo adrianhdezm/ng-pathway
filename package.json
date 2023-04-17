@@ -1,6 +1,6 @@
 {
   "name": "ngpathway",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "NgPathway is a file-based router utilities library for Angular applications. It simplifies the process of creating and managing routes in your Angular app by allowing you to organize your routes in a directory structure that mirrors your application's UI structure.",
   "main": "lib/index.js",
   "files": [
