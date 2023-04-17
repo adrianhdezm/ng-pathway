@@ -56,5 +56,6 @@ if (fs.existsSync(path.join(projectRootPath, 'package.json'))) {
     }
   } catch (error) {
     // fail silenly
+    console.warn(error);
   }
 }
