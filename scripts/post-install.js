@@ -23,8 +23,8 @@ if (fs.existsSync(path.join(projectRootPath, 'package.json'))) {
 
   try {
     // Adapt Nx Project project.json
-    const nxProjectJsonPath = fs.existsSync(path.join(projectRootPath, 'project.json'));
-    if (nxProjectJsonPath) {
+    const nxProjectJsonPath = path.join(projectRootPath, 'project.json');
+    if (fs.existsSync(nxProjectJsonPath)) {
       const nxProjectJson = JSON.parse(fs.readFileSync(nxProjectJsonPath, 'utf-8'));
 
       // Change build
@@ -41,8 +41,8 @@ if (fs.existsSync(path.join(projectRootPath, 'package.json'))) {
     }
 
     // Adapt Ts Config for App
-    const tsConfigAppPath = fs.existsSync(path.join(projectRootPath, 'tsconfig.app.json'));
-    if (tsConfigAppPath) {
+    const tsConfigAppPath = path.join(projectRootPath, 'tsconfig.app.json');
+    if (fs.existsSync(tsConfigAppPath)) {
       const tsConfigApp = JSON.parse(fs.readFileSync(tsConfigAppPath, 'utf-8'));
 
       // Extend includes
@@ -51,7 +51,7 @@ if (fs.existsSync(path.join(projectRootPath, 'package.json'))) {
         tsConfigApp.include = [...include, '.ngpathway/router/**/*.ts', '.ngpathway/types.d.ts'];
 
         // Write the changes
-        fs.writeFileSync(tsConfigApp, JSON.stringify(tsConfigApp, null, 2) + '\n');
+        fs.writeFileSync(tsConfigAppPath, JSON.stringify(tsConfigApp, null, 2) + '\n');
       }
     }
   } catch (error) {
